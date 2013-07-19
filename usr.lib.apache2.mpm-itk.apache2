@@ -1,0 +1,140 @@
+# Author: Jeroen Ooms <jeroen@opencpu.orgm>
+# This profile is a modified version of usr.lib.apache2.mpm-itkapache. 
+# It adds setgid and setpuid to ^HANDLING_UNTRUSTED_INPUT
+
+#include <tunables/global>
+/usr/lib/apache2/mpm-itk/apache2 flags=(complain) {
+
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  capability kill,
+  capability net_bind_service,
+  capability sys_tty_config,
+  capability setgid,
+  capability setuid,
+
+
+
+    #== Apache config: ===========
+    /etc/mime.types r,
+    /etc/apache2/** r,
+    /proc/** rwk,
+    /proc/*/attr/current rwk,
+    /var/log/apache2/* w,
+
+
+    #== Apache libs: =============
+    /usr/lib/apache2/modules/** rkm,
+    /usr/lib/apache2/suexec rk,
+
+
+    #== PHP/Perl/MySQL: ==========
+    /usr/lib/php5/** rwk,
+#    /var/lib/php5/** rwk,
+    /etc/php5/mods-available/* r,
+    
+    /usr/share/perl/5.14.2/** r,
+    /etc/php5/apache2/** r,
+    /etc/php5/{,apache2}conf.d/* r,
+    /etc/php5/{cgi,cli,conf,d,apache2,mods-avaible}/** r,
+    /etc/php5/conf.d/ r,
+
+    /var/lib/ucf/cache/** r,
+    /usr/bin/php5 r,
+    /usr/bin/php5-cgi r,
+    /usr/lib/php5 r,
+    /usr/lib/apache2/modules/* r,
+    /usr/lib/cgi-bin/php5 r,
+    /usr/lib/php5/** r,
+    /usr/sbin/php5dismod r,
+    /usr/sbin/php5enmod r,
+    /usr/share/php5 r,
+    /usr/share/php5/** r,
+    /usr/share/php r,
+    /usr/share/php/** r,
+    /usr/lib/php5/20100525+lfs/** rk,
+
+    /etc/php5/{conf.d,apache2,cli,fastcgi,cgi}/ r,
+    /etc/php5/{conf.d,apache2,cli,fastcgi,cgi}/*.ini r,
+    /usr/X11R6/lib{,32,64}/lib*.so* mr,
+    /usr/lib{64,}/php5/*/*.so mr,
+    /var/lib/php5/** rwlk,
+    /var/lib/php5/session_mm_* rwlk,
+    /var/lib/php5/sess_* rwlk,
+    /usr/share/php{,5}/ r,
+    /usr/share/php{,5}/** mr,
+    /usr/share/mysql/** r,
+
+
+
+    #== Apache PID: ==============
+    /{,run}/apache2.pid rwk,
+    /{,run}/apache2/* rwk,
+    /{,run}/lock/apache2/* rwk,
+
+    /{,var}/run/apache2.pid rwk,
+    /{,var}/run/apache2/* rwk,
+    /{,var}/run/lock/apache2/* rwk,
+
+
+    #== Apache VHosts: ===========
+    /{,var/www}/*/{log,temp,exec,public_html,moodledata}/** rwk,
+    
+    
+
+
+
+  ^DEFAULT_URI flags=(complain) {
+    #include <abstractions/base>
+    #include <abstractions/nameservice>
+    
+    capability setgid,
+    capability setuid,    
+
+    #== Apache Enviroments: ======
+    /proc/** rwkix,
+    /var/log/apache2/* wk,
+    /var/lib/php5/** rwk,
+    /etc/php5/{,apache2}conf.d/* r,
+    /usr/share/mysql/charsets/Index.xml r,
+    
+    #== Apache VHosts: ===========
+    /{,var/www}/*/{log,temp,exec,public_html,moodledata}/** rwk,
+
+
+  }
+
+  ^HANDLING_UNTRUSTED_INPUT flags=(complain) {
+    #include <abstractions/nameservice>
+
+    capability setgid,
+    capability setuid,
+
+    #== Apache VHosts: ===========
+    /{,var/www}/*/{log,temp,exec,public_html,moodledata}/** rwk,
+
+    /var/log/apache2/* w,
+
+
+    /dev/urandom r,
+    /dev/random r,
+    /proc/** rwk,
+    /usr/share/zoneinfo/zone.tab r,
+    
+    #== Apache PID: ==============
+    /{,run}/apache2.pid rwk,
+    /{,run}/apache2/* rwk,
+    /{,run}/lock/apache2/* rwk,
+
+    /{,var}/run/apache2.pid rwk,
+    /{,var}/run/apache2/* rwk,
+    /{,var}/run/lock/apache2/* rwk,
+
+  }
+
+  #include <apache2.d>
+
+  # Site-specific additions and overrides. See local/README for details.
+####  #include <local/usr.lib.apache2.mpm-itk.apache2>
+}

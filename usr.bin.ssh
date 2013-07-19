@@ -1,0 +1,16 @@
+#include <tunables/global>
+
+/usr/sbin/sshd {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+
+  capability setgid,
+
+  /etc/ssh/* r,
+  /etc/ssl/openssl.cnf r,
+  /proc/*/fd/ r,
+  /proc/*/oom_adj w,
+  /usr/sbin/sshd rix,
+  /usr/share/ssh/blacklist.RSA-2048 r,
+
+}

@@ -1,0 +1,62 @@
+#include <tunables/global>
+
+/usr/sbin/nginx flags=(complain) {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+  #include <abstractions/ssl_certs>
+
+  deny /root/** rw,
+
+# Лучше бы это убрать
+  capability chown,
+
+  capability setgid,
+  capability setuid,
+  capability dac_override,
+
+  /etc/nginx/* rwk,
+
+# Поддержка OpenSSL
+  /usr/lib/ssl/openssl.cnf r,
+  /etc/ssl/openssl.cnf r,
+  owner /etc/nginx/ssl/* r,
+
+# Пользовательские файлы конфигурации nginx
+  owner /etc/nginx/conf.d/ r,
+  owner /etc/nginx/conf.d/*.conf r,
+
+# Здесь должны быть перечислены все используемые файлы из /etc/nginx
+  owner /etc/nginx/mime.types r,
+  owner /etc/nginx/nginx.conf r,
+
+# Конфиги виртуальных хостов
+  /etc/nginx/sites-available/* r,
+  owner /etc/nginx/sites-enabled/ r,
+
+# Сайты пользователей
+  /{,var/www}/*/{log,temp,exec,public_html}/** r,
+  /var/lib/php/session** rwk,
+
+  /var/lib/nginx/proxy/** rwk,
+  /var/lib/php5/** rwlk,
+
+# Поддержка замены nginx на лету
+  /usr/sbin/nginx rix,
+
+
+# Логи nginx
+  /var/log/nginx/* w,
+  /var/log/nginx/* w,
+  /var/www/*/log/* w,
+
+# PID
+  owner /var/run/nginx.pid rw,
+  /{,run}/nginx.pid rwk,
+  /{,run}/nginx/* rwk,
+  /{,run}/lock/nginx/* rwk,
+  
+  /{,var/}/run/nginx.pid rwk,
+  /{,var/}/run/nginx/* rwk,
+  /{,var/}/run/lock/nginx/* rwk,
+
+}

@@ -1,0 +1,18 @@
+#include <tunables/global>
+
+/usr/bin/freshclam {
+  #include <abstractions/base>
+  #include <abstractions/consoles>
+  #include <abstractions/nameservice>
+
+  capability setgid,
+  capability setuid,
+
+  /etc/clamav/freshclam.conf r,
+  /etc/clamd.conf r,
+  /etc/freshclam.conf r,
+  /usr/bin/freshclam mr,
+  /var/lib/clamav/ r,
+  /var/lib/clamav/** rw,
+  /var/log/clamav/freshclam.log rwk,
+}
